@@ -625,7 +625,7 @@ wget -O /usr/bin/badvpn-udpgw "https://github.com/johnberic/yaki/raw/main/badvpn
 chmod +x /usr/bin/badvpn-udpgw
 ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
 
-wget -O autodns "admin-boyes.com/dnstt/autodns" && chmod +x autodns && sed -i -e 's/\r$//' ~/autodns && ./autodns
+wget -O autodns "https://raw.githubusercontent.com/johnberic/ubuntu_ovpnws/main/autodns" && chmod +x autodns && sed -i -e 's/\r$//' ~/autodns && ./autodns
 
 cd /usr/local
 wget https://golang.org/dl/go1.16.2.linux-amd64.tar.gz
@@ -724,32 +724,6 @@ echo "SHELL=/bin/bash
 }
 
 apache(){
-
-
-mkdir /usr/local/sbin/jho
-chmod +x /usr/local/sbin/jho
-cat << EOF > /usr/local/sbin/jho/cron.sh
-#!/bin/bash
-wget -O /usr/local/sbin/jho/active.sh https://corpovpn.shop/system//app/prem
-wget -O /usr/local/sbin/jho/inactive.sh https://corpovpn.shop/system//app/xprem
-wget -O /usr/local/sbin/jho/deleted.sh https://corpovpn.shop/system//app/deleted
-chmod -R +x /usr/local/sbin/jho/
-cd /root
-rm -rf *sh
-/bin/bash /usr/local/sbin/jho/active.sh
-/bin/bash /usr/local/sbin/jho/inactive.sh
-/bin/bash /usr/local/sbin/jho/deleted.sh
-rm /usr/local/sbin/jho/inactive.sh
-rm /usr/local/sbin/jho/active.sh
-rm /usr/local/sbin/jho/deleted.sh
-EOF
-chmod +x /usr/local/sbin/jho/cron.sh
-crontab -r
-echo "SHELL=/bin/bash
-*/3 * * * * /bin/bash /usr/local/sbin/jho/cron.sh >/dev/null 2>&1" | crontab -
-service cron restart
-
-
 
 sudo apt install apache2 -y
 sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
