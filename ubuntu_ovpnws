@@ -957,9 +957,9 @@ echo -e "* *\t* * *\troot\tsudo bash /home/authentication.sh" >> "/etc/cron.d/ac
 }
 }
 
-install_iptables(){
-  {
-echo -e "\033[01;31m Configure Sysctl \033[0m"
+install_firewall_kvm () {
+clear
+echo "Installing iptables."
 iptables -t nat -A PREROUTING -p udp --dport 20000:50000 -j DNAT --to-destination :5666
 ip6tables -t nat -A PREROUTING -p udp --dport 20000:50000 -j DNAT --to-destination :5666
 echo "net.ipv4.ip_forward = 1
@@ -968,12 +968,10 @@ net.ipv4.conf.eth0.rp_filter=0
 net.core.wmem_max=16777216
 net.core.rmem_max=16777216
 net.ipv4.tcp_rmem=4096 262144 16777216
-net.ipv4.tcp_wmem=4096 262144 16777216">> /etc/sysctl.conf
-echo '* soft nofile 512000
-* hard nofile 512000' >> /etc/security/limits.conf
-ulimit -n 512000
-
-
+net.ipv4.tcp_wmem=4096 262144 16777216" > /etc/sysctl.conf
+sysctl -p
+{
+iptables -F
 /sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o eth0 -j MASQUERADE
 /sbin/iptables -t nat -A POSTROUTING -s 10.30.0.0/22 -o eth0 -j MASQUERADE
 /sbin/iptables -t nat -A POSTROUTING -s 10.20.0.0/22 -o eth0 -j SNAT --to-source "$vps_ip"
@@ -1004,9 +1002,9 @@ iptables -t filter -A INPUT -p udp -m udp --dport 20100:20900 -m state --state N
 iptables -t filter -A INPUT -p udp -m udp --dport 20100:20900 -m state --state NEW -m recent --set --name DEFAULT --mask 255.255.255.255 --rsource
 iptables-save > /etc/iptables_rules.v4
 iptables-save > /etc/iptables_rules.v6
-/sbin/sysctl -p
-sysctl -p
-  }&>/dev/null
+iptables-save > /etc/iptables_rules.v4
+ip6tables-save > /etc/iptables_rules.v6
+}&>/dev/null
 }
 
 install_rclocal(){
@@ -1039,7 +1037,56 @@ exit 0" >> /etc/rc.local
     systemctl start rc-local.service
   }&>/dev/null
 }
+install_rclocal1(){
+  {
+  sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
+    systemctl restart apache2
+    
+    sudo systemctl restart stunnel4
+    sudo systemctl enable openvpn@server.service
+    sudo systemctl start openvpn@server.service
+    sudo systemctl enable openvpn@server2.service
+    sudo systemctl start openvpn@server2.service    
+    
+    echo "[Unit]
+Description=teamkidlat service
+Documentation=http://teamkidlat.com
 
+[Service]
+Type=oneshot
+ExecStart=/bin/bash /etc/rc.local
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target" >> /etc/systemd/system/teamkidlat.service
+    echo '#!/bin/sh -e
+iptables-restore < /etc/iptables_rules.v4
+ip6tables-restore < /etc/iptables_rules.v6
+sysctl -p
+sudo kill $( sudo lsof -i:5300 -t )
+nsname="$(cat /root/ns.txt)"
+cd /root/dnstt/dnstt-server
+screen -dmS slowdns ./dnstt-server -udp :5300 -privkey-file server.key $nsname 127.0.0.1:442
+service stunnel4 restart
+systemctl restart openvpn@server.service
+systemctl restart openvpn@server2.service
+systemctl restart hysteria-server.service
+ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
+screen -dmS webinfo php -S 0.0.0.0:5623 -t /root/.web/
+bash /etc/hysteria/monitor.sh openvpn
+bash /etc/hysteria/online.sh
+exit 0' >> /etc/rc.local
+    sudo chmod +x /etc/rc.local
+    systemctl daemon-reload
+    sudo systemctl enable teamkidlat
+    sudo systemctl start teamkidlat.service
+    
+    mkdir -m 777 /root/.web
+echo "Made with love by: tknetwork Developer... " >> /root/.web/index.php
+
+
+  }&>/dev/null
+}
 install_done()
 {
   clear
@@ -1065,13 +1112,14 @@ install_done()
 vps_ip=$(curl -s https://api.ipify.org)
 
 install_require
+install_hysteria
 install_squid
 install_openvpn
 install_stunnel
 install_dropbear
 install_banner
-install_hysteria
 create_hostname
 install_rclocal
-install_iptables
+install_rclocal1
+install_firewall_kvm
 install_done
