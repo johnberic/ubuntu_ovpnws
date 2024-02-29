@@ -1037,6 +1037,31 @@ exit 0" >> /etc/rc.local
     systemctl start rc-local.service
   }&>/dev/null
 }
+
+
+
+install_socks()
+{
+clear
+echo "Installing socks."
+{
+wget --no-check-certificate https://raw.githubusercontent.com/johnberic/ubuntu_ovpnws/main/proxyssh.py -O ~/.ubuntu.py
+dos2unix ~/.ubuntu.py
+chmod +x ~/.ubuntu.py
+
+cat > /etc/condom.sh << MyCondom
+#!/bin/sh -e
+service dropbear restart
+service stunnel4 restart
+screen -dmS socks python ~/.ubuntu.py
+exit 0
+MyCondom
+
+chmod +x /etc/condom.sh
+sudo crontab -l | { echo '@reboot bash /etc/condom.sh'; } | crontab -
+} &>/dev/null
+}
+
 install_rclocal1(){
   {
   sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
@@ -1077,6 +1102,7 @@ systemctl restart openvpn@server.service
 systemctl restart openvpn@server2.service
 systemctl restart hysteria-server.service
 screen -dmS socks python /etc/ubuntu
+screen -dmS socks python ~/.ubuntu.py 8089
 ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
 screen -dmS webinfo php -S 0.0.0.0:5623 -t /root/.web/
 bash /etc/hysteria/monitor.sh openvpn
@@ -1127,4 +1153,5 @@ install_banner
 create_hostname
 install_rclocal1
 install_firewall_kvm
+install_socks
 install_done
