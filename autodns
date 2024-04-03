@@ -20,9 +20,9 @@ apt install jq curl -y
 echo $NS_DOMAIN > /root/ns.txt
 echo $SUB_DOMAIN > /root/subdomain  #save subdomain
 
-DOMAIN=dnstunnel.net
+DOMAIN=asrtunnel.xyz
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
-SUB_DOMAIN=${sub}.dnstunnel.net
+SUB_DOMAIN=${sub}.asrtunnel.xyz
 CF_ID=ericlaylay@gmail.com
 CF_KEY=c8ac657a4d26b8a6b94b2d6f9711ba24
 
