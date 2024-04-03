@@ -24,7 +24,7 @@ DOMAIN=asrtunnel.xyz
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
 SUB_DOMAIN=${sub}.asrtunnel.xyz
 CF_ID=ericlaylay@gmail.com
-CF_KEY=c8ac657a4d26b8a6b94b2d6f9711ba24
+CF_KEY=267f2cf11375260fa526109dcb9c630697815
 
 
 NS_DOMAIN=tknetwork-${SUB_DOMAIN}
