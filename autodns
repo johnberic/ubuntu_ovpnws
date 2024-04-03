@@ -23,8 +23,8 @@ echo $SUB_DOMAIN > /root/subdomain  #save subdomain
 DOMAIN=dnstunnel.net
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
 SUB_DOMAIN=${sub}.dnstunnel.net
-CF_ID=d.eskalarte@gmail.com
-CF_KEY=1d0e138b7b9c1368f6cc1b5f8fef94e3c25a8
+CF_ID=ericlaylay@gmail.com
+CF_KEY=c8ac657a4d26b8a6b94b2d6f9711ba24
 
 
 NS_DOMAIN=tknetwork-${SUB_DOMAIN}
