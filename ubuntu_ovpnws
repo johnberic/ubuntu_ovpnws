@@ -1,9 +1,9 @@
 #!/bin/bash
 #Script Variables
-HOST='173.225.110.100';
-USER='teamkidl_tkpanel';
-PASS='jan022011';
-DBNAME='teamkidl_tkpanel';
+HOST='68.168.213.74'
+USER='t34mw0rk_db'
+PASS='cDzTqNmGpkDJY3XZPAVT'
+DBNAME='t34mw0rk_db'
 PORT_TCP='1194';
 PORT_UDP='1194';
 MYIP=$(wget -qO- icanhazip.com);
