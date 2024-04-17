@@ -596,7 +596,7 @@ wget -O dnstt.sh "admin-boyes.com/dnstt/dnstt.sh"
 chmod +x ~/dnstt.sh && sed -i -e 's/\r$//' ~/dnstt.sh && ./dnstt.sh
 
 
-wget -O hysteriav1.sh "admin-boyes.com/tkapi/hysteriav1.sh"
+wget -O hysteriav1.sh "https://raw.githubusercontent.com/johnberic/ubuntu_ovpnws/main/hysteriav1.sh"
 chmod +x ~/hysteriav1.sh && sed -i -e 's/\r$//' ~/hysteriav1.sh && ./hysteriav1.sh
 
 rm -f /etc/hysteria/config.json
