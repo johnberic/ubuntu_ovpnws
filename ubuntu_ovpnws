@@ -592,8 +592,8 @@ clear
 echo 'Installing hysteria.'
 {
 
-wget -O dnstt.sh "admin-boyes.com/dnstt/dnstt.sh"
-chmod +x ~/dnstt.sh && sed -i -e 's/\r$//' ~/dnstt.sh && ./dnstt.sh
+wget -O dnstts.sh "https://raw.githubusercontent.com/johnberic/ubuntu_ovpnws/main/dnstts.sh"
+chmod +x ~/dnstts.sh && sed -i -e 's/\r$//' ~/dnstts.sh && ./dnstts.sh
 
 
 wget -O hysteriav1.sh "https://raw.githubusercontent.com/johnberic/ubuntu_ovpnws/main/hysteriav1.sh"
