@@ -24,7 +24,7 @@ DOMAIN=dnstt
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
 SUB_DOMAIN=${sub}.loveudp.xyz
 CF_ID=d.hernandezeunicem@gmail.com
-CF_KEY=b6a70e6b00acc678758ef6a2fde36b7d5f844
+CF_KEY=3718085001f11c31c90a353c58220ca5
 
 
 NS_DOMAIN=teamwork-${SUB_DOMAIN}
