@@ -20,9 +20,9 @@ apt install jq curl -y
 echo $NS_DOMAIN > /root/ns.txt
 echo $SUB_DOMAIN > /root/subdomain  #save subdomain
 
-DOMAIN=loveudp.xyz
+DOMAIN=dnstt
 sub=$(</dev/urandom tr -dc a-z0-9 | head -c6)
-SUB_DOMAIN=${sub}.dnstt
+SUB_DOMAIN=${sub}.loveudp.xyz
 CF_ID=d.hernandezeunicem@gmail.com
 CF_KEY=b6a70e6b00acc678758ef6a2fde36b7d5f844
 
